@@ -1,0 +1,36 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+{% if watchlist.item.all %}
+<div class="container">
+  <div class="row">
+    {% for item in watchlist.item.all %}
+    <div class="card border-light col col-lg-3 col-md-6 col-sm-6 col-12">
+    <a href="{% url 'listing-detail' item.id %}" ><img src="{{ item.url }}" class="img-fluid rounded-start" alt="Card image cap" width="400px"></a>
+      <div class="card-body">
+        <h5 class="card-body"> {{ item.title }}</h5>
+        <a href="{% url 'removelisting' item.id %}" class="btn btn-outline-dark btn-block">Remove</a>
+      </div>
+    </div></a>
+    {% endfor %}
+  </div>
+</div> 
+    {% if empty %}
+        <div class="card text-center">
+          <div class="card-body">
+            <h3 class="card-title">{{ empty }}</h3>
+            <img class=".card-img-top" src="https://www.svgrepo.com/show/233139/auction.svg" alt="Card image cap" width="100px">
+            <p class="card-text"></p>
+          </div>
+        </div>
+    {% endif %}
+{% else %}         
+<div class="card text-center">
+  <div class="card-body">
+    <h3 class="card-title">Your Watchlist is empty</h3>
+    <img class=".card-img-top" src="https://www.svgrepo.com/show/233139/auction.svg" alt="Card image cap" width="100px">
+    <p class="card-text"></p>
+  </div>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,127 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+{% if closed %}
+
+{% if winner.user == user %}
+<div class="card text-center">
+        <div class="card-header">
+                <h5 class="card-title">{{ listing.title }}, this listing has been closed </h5>
+        </div>
+        <div class="card-body">
+                <h5 class="card-text">Congragulations, You have won this auction for {{ highest_bid.bid }}
+                        <span>&#8377;</span> </h5>
+                <img src="https://www.svgrepo.com/show/205911/fireworks.svg" alt="Sorry image is not available"
+                        width="100px">
+        </div>
+        <div>
+                {% else %}
+                <div class="card text-center">
+                        <div class="card-header">
+                                <h5 class="card-title">{{ listing.title }}, this listing has been closed </h5>
+                        </div>
+                        <div class="card-body">
+                                <h5 class="card-title">Winner of this Auction is {{ winner.user }}</h5>
+                                <h6 class="card-text">This item has been sold out for {{ highest_bid.bid }}
+                                        <span>&#8377;</span> </h6>
+                        </div>
+                        <div>
+                                {% endif %}
+
+
+                                {% else %}
+                                {% if messages %}
+                                {% for message in messages %}
+                                <div class="alert alert-{{ message.tags }} alert-dismissible">
+                                        <a href="" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                        {{ message }}
+                                </div>
+                                {% endfor %}
+                                {% endif %}
+                                <div class="card mb-3">
+                                        <div class="row g-0">
+                                                <div class="col-md-4">
+                                                        <img src="{{ listing.url }}" class="img-fluid rounded-start"
+                                                                alt="Image Has not been provided by Owner">
+                                                </div>
+                                                <div class="col-md-20">
+                                                        <div class="card-body">
+                                                                <h5 class="card-title">{{ listing.title }}</h5>
+                                                                <p class="card-text">{{ listing.description }}</p>
+                                                                {% if highest_bidder %}
+                                                                <h3 class="card-text">Current Price : <span>&#8377;</span>
+                                                                        {{ listing.current_bid }} </h3><br>
+                                                                {% endif %}
+                                                                <h4 class="card-text">Details...</h4>
+                                                                <h6 class="card-text">
+                                                                        <li> Listed by : {{ listing.user }} </li>
+                                                                </h6>
+                                                                {% if highest_bidder %}
+                                                                <h6 class="card-text">
+                                                                        <li>Current highest bid by : {{highest_bidder.user }}</li>
+                                                                </h6>
+                                                                {% else %}
+                                                                <h6 class="card-text">
+                                                                        <li>No bids yet...</li>
+                                                                </h6>
+                                                                {% endif %}
+                                                                <h6 class="card-text">
+                                                                        <li>Listing Price : <span>&#8377;</span> {{ listing.price }}</li>
+                                                                </h6>
+                                                                <h6>
+                                                                        <li>Category : {{ listing.category }}</li>
+                                                                </h6>
+
+                                                                {% if listing.user == user %}
+                                                                <a href="{% url 'closeyourlisting' listing.id %}"
+                                                                        type="button" value="Close listing"
+                                                                        class="btn btn-danger">Close Listing</a>
+                                                                {% endif %}
+                                                                {% if listing.user != user %}
+                                                                <form method="POST">
+                                                                        {% load crispy_forms_tags %}
+                                                                        {% csrf_token %}
+                                                                        {{ bid | crispy}}
+                                                                        <input type="submit" value="Place Bid" class="btn btn-dark">
+                                                                                
+                                                                        {% if not added %}
+                                                                        <a href="{% url 'watchlist' listing.pk %}"
+                                                                                role="button" class="btn btn-dark">Add
+                                                                                to Watchlist</a>
+                                                                        {% else %}
+                                                                        <a href="{% url 'removelisting' listing.pk %}"
+                                                                                role="button"
+                                                                                class="btn btn-dark">Remove from
+                                                                                Watchlist</a>
+                                                                        {% endif %}
+                                                                </form>
+                                                                {% endif %}
+                                                                
+                                                                <br>
+                                                        </div>
+                                                </div>
+                                        </div>
+                                </div>
+                                {% if user.is_authenticated %}
+                                <form method="POST">
+                                        {% csrf_token %}
+                                        {{ comment_box | crispy}}
+                                        <input type="submit" value="Comment" class="btn btn-dark">
+                                </form>
+                                <br><br><br>
+                                {% endif %}
+                                {% if comments %}
+                                <div class="card-header">
+                                        <h4>Comments</h4>
+                                </div>
+                                <div class="card-body">
+                                        {% for comment in comments %}
+                                        <h6 class="card-text">-{{ comment.comment }}</h6>
+                                        <p class="card-title">
+                                        <small class="text-muted">-{{ comment.user }} || {{ comment.date_posted }}</small></p>
+                                        <hr>
+                                        {% endfor %}
+                                </div>
+                                {% endif %}
+                                {% endif %}
+                                {% endblock %}
