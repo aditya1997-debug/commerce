@@ -15,7 +15,7 @@ git clone <repository-url>
 cd <repository-directory>
 ```
 
-**Apply the migrations**
+**Install crispy-forms**
 ```
 pip install django-crispy-forms
 
